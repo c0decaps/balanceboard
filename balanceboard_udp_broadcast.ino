@@ -16,6 +16,7 @@ const char DEVICE_NAME[] = "balance";
 MPU6050 mpu(Wire);
 unsigned long timer = 0;
 
+// reset function from the WiFiManager Advanced example
 void checkButton(){
   // check for button press
   if ( digitalRead(TRIGGER_PIN) == LOW ) {
@@ -109,7 +110,7 @@ void loop() {
     byte_buffer[i] = byte(char_buffer[i]);
   }
    
-  if((millis()-timer)>100){ // print data every 10ms
+  if((millis()-timer)>100){
     Serial.println(angles_str);
     udp.beginPacket(udpAddress, udpPort);
     udp.write(byte_buffer, angles_len);
