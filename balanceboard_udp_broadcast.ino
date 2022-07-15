@@ -2,9 +2,8 @@
 #include <WiFiUdp.h>
 #include "Wire.h"
 #include <MPU6050_light.h>
-
-char * ssid = "SSID";
-char * pwd = "PASSWORD";
+#include <WiFiManager.h>
+#include <ESPmDNS.h>
 
 IPAddress udpAddress;
 const int udpPort = 50000;
@@ -17,25 +16,30 @@ unsigned long timer = 0;
 void setup() {
   Serial.begin(9600);
 
-  //Connect to the WiFi network
-  WiFi.begin(ssid, pwd);
-  Serial.println("");
-  // Wait for connection
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
+  //WiFiManager
+  const char DEVICE_NAME[] = "balance";
+  WiFiManager wifiManager;
+  wifiManager.setConnectTimeout(60);
+  bool res = wifiManager.autoConnect(DEVICE_NAME, "board");
+  if(!res) {
+      Serial.println("Failed to connect");
+      ESP.restart();
+  } else {
+      Serial.print(F("WiFi connected! IP address: "));
+      Serial.println(WiFi.localIP());
   }
-  Serial.println("");
-  Serial.print("Connected to ");
-  Serial.println(ssid);
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
   // use the assigned local IP and change the last byte to .255 to get the broadcast adress for this networks
   // devices listening on the same port will then be able to listen to the data
   udpAddress = WiFi.localIP();
   udpAddress[3]=255;
   Serial.print("Broadcast Address: ");
   Serial.println(udpAddress);
+  
+  // mDNS setup to be reachable as balanceboard.local
+  if(!MDNS.begin(DEVICE_NAME)) {
+     Serial.println("Error starting mDNS");
+     return;
+  }
   
   Wire.begin();
   byte status = mpu.begin();
