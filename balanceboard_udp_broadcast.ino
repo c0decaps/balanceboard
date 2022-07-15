@@ -4,21 +4,56 @@
 #include <MPU6050_light.h>
 #include <WiFiManager.h>
 #include <ESPmDNS.h>
+#define TRIGGER_PIN 0
 
 IPAddress udpAddress;
 const int udpPort = 50000;
 
 WiFiUDP udp;
+WiFiManager wifiManager;
+const char DEVICE_NAME[] = "balance";
 
 MPU6050 mpu(Wire);
 unsigned long timer = 0;
 
+void checkButton(){
+  // check for button press
+  if ( digitalRead(TRIGGER_PIN) == LOW ) {
+    // poor mans debounce/press-hold, code not ideal for production
+    delay(50);
+    if( digitalRead(TRIGGER_PIN) == LOW ){
+      Serial.println("Button Pressed");
+      // still holding button for 3000 ms, reset settings, code not ideaa for production
+      delay(3000); // reset delay hold
+      if( digitalRead(TRIGGER_PIN) == LOW ){
+        Serial.println("Button Held");
+        Serial.println("Erasing Config, restarting");
+        wifiManager.resetSettings();
+        ESP.restart();
+      }
+      
+      // start portal w delay
+      Serial.println("Starting config portal");
+      wifiManager.setConfigPortalTimeout(120);
+      
+      if (!wifiManager.startConfigPortal(DEVICE_NAME)) {
+        Serial.println("Failed to connect");
+        delay(3000);
+        // ESP.restart();
+      } else {
+        //if you get here you have connected to the WiFi
+        Serial.println("WiFi connected!");
+      }
+    }
+  }
+}
+
 void setup() {
   Serial.begin(9600);
 
+  pinMode(TRIGGER_PIN, INPUT);
+  
   //WiFiManager
-  const char DEVICE_NAME[] = "balance";
-  WiFiManager wifiManager;
   bool res = wifiManager.autoConnect(DEVICE_NAME);
   if(!res) {
       Serial.println("Failed to connect");
@@ -81,4 +116,5 @@ void loop() {
     udp.endPacket();
     timer = millis();  
   }
+  checkButton();
 }
