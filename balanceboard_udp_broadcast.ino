@@ -19,8 +19,7 @@ void setup() {
   //WiFiManager
   const char DEVICE_NAME[] = "balance";
   WiFiManager wifiManager;
-  wifiManager.setConnectTimeout(60);
-  bool res = wifiManager.autoConnect(DEVICE_NAME, "board");
+  bool res = wifiManager.autoConnect(DEVICE_NAME);
   if(!res) {
       Serial.println("Failed to connect");
       ESP.restart();
