@@ -9,7 +9,10 @@
 #include "Wire.h"
 #include <MPU6050_light.h>
 #include <WiFiManager.h>
+
 #define TRIGGER_PIN 0
+#define BUFLEN 50
+#define DELAY_MS 100
 
 IPAddress udpAddress;
 const int udpPort = 50000;
@@ -107,15 +110,15 @@ void loop() {
   String angles_str = "x:"+x+",y:"+y+",z:"+z;
   int angles_len = angles_str.length();
   // convert unified string to char array
-  char char_buffer[50];
-  angles_str.toCharArray(char_buffer, 50);
+  char char_buffer[BUFLEN];
+  angles_str.toCharArray(char_buffer, BUFLEN);
   // convert char array to bytes (for the udp.write(...) function)
-  byte byte_buffer[50];
+  byte byte_buffer[BUFLEN];
   for(int i = 0; i < angles_len; i++) {
     byte_buffer[i] = byte(char_buffer[i]);
   }
    
-  if((millis()-timer)>100){
+  if((millis()-timer) > DELAY_MS){
     Serial.println(angles_str);
     udp.beginPacket(udpAddress, udpPort);
     udp.write(byte_buffer, angles_len);
