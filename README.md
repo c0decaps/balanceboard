@@ -9,7 +9,9 @@ Attached to a balanceboard, the data measured that way might be used as a way to
 
 As a proof of work, I created two minimal exmaples:
 * [Python listener](https://github.com/ninedraft/python-udp/blob/master/client.py) (requires changing the port to 50000 to work with this project)
-* [Godot listener and visualizer](https://github.com/c0decaps/balanceboard-visualizer)
+* [Godot listener and visualizer](https://github.com/c0decaps/balanceboard-visualizer) 
+
+![balanceboard_shorter_640×360](https://user-images.githubusercontent.com/20572466/207466992-66e49eb4-1712-4d4a-bd5e-82fa3720f5ee.gif)
 
 ## Details
 
