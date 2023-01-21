@@ -7,7 +7,7 @@ The idea was to create a more user friendly and seamless version of the [MPU6050
 As the general ability to wirelessly transmit gyroscope/accelerometer data can open the door to manifold motion based use cases, an easy to use and read example might lower the barrier for other developers to make use of the measured data. 
 Attached to a balanceboard, the data measured that way might be used as a way to compete with others or even as an input for games that are to be controlled via the player balancing. 
 
-As a proof of work, I created two minimal exmaples:
+The following examples can be used as a proof of work:
 * [Python listener](https://github.com/ninedraft/python-udp/blob/master/client.py) (requires changing the port to 50000 to work with this project)
 * [Godot listener and visualizer](https://github.com/c0decaps/balanceboard-visualizer) 
 
